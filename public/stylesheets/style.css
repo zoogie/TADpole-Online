@@ -1,0 +1,33 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 16px;
+  line-height: 25px;
+}
+
+h5 {
+  text-decoration: underline;
+}
+
+input, select {
+  max-width: 500px;
+}
+
+#p-error {
+  color: red;
+  font-weight: bold;
+  padding-top: 10px;
+}
+
+.li-browser-good {
+  color: green;
+}
+
+.li-browser-maybe {
+  color: orange;
+}
+
+.li-browser-bad {
+  color: red;
+}

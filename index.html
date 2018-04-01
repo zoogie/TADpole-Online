@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>TADpole Online</title>
+  <link rel="shortcut icon" href="https://i.imgur.com/CVSu1zc.png" type="image/x-icon" />
+  <link rel="icon" href="https://i.imgur.com/CVSu1zc.png" type="image/x-icon" />
+
+  <script src="public/js/libs/jquery.min.js"></script>
+  <script src="public/js/libs/bootstrap.bundle.min.js"></script>
+  <script src="public/js/libs/crc32.js"></script>
+  <script src="public/js/libs/biginteger.min.js"></script>
+  <script src="public/js/libs/aes.js"></script>
+  <script src="public/js/libs/sha256.js"></script>
+  <script src="public/js/libs/cryptojs-aes.min.js"></script>
+  <script src="public/js/libs/cmac.min.js"></script>
+
+  <script src="public/js/custom/main.js"></script>
+  <script src="public/js/custom/constants.js"></script>
+  <script src="public/js/custom/util.js"></script>
+  <script src="public/js/custom/fileAccess.js"></script>
+  <script src="public/js/custom/validation.js"></script>
+  <script src="public/js/custom/extraction.js"></script>
+  <script src="public/js/custom/injection.js"></script>
+  <script src="public/js/custom/building.js"></script>
+  <script src="public/js/custom/msed.js"></script>
+
+  <link href="public/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="public/stylesheets/style.css" rel="stylesheet" type="text/css">
+
+  <meta name="description" content="DSiWare Injector for Seedminer.">
+  <meta property="og:image" content="https://i.imgur.com/CVSu1zc.png">
+</head>
+
+<body>
+  <div class="row text-center">
+    <div class="col-lg-12">
+      <h1>TADpole Online</h1>
+      <br/>
+      <br/>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-2"></div>
+    <div class="col-lg-4">
+      <h5>What you need:</h5>
+      <ul>
+        <li>A compatible dsiware game</li>
+        <li>Your movable.sed</li>
+        <li>The following files.
+          <strong>You will need a torrent client like deluge or qbittorent to download the files!</strong>
+        </li>
+        <ul>
+          <li>A ctcert.bin</li>
+          <ul>
+            <li>
+              <a href="magnet:?xt=urn:btih:24e6e304dde87e3b6381fe10e8b21ed326b3f445&amp;dn=ctcert.bin">ctcert.bin</a>
+            </li>
+          </ul>
+          <li>The injection archive for your region
+            <strong>(extract after download!)</strong>
+          </li>
+          <ul>
+            <li>
+              <a href="magnet:?xt=urn:btih:3c5965b3d2e97ec10b0d9585e99380088043563d&amp;dn=USA.zip">USA</a>
+            </li>
+            <li>
+              <a href="magnet:?xt=urn:btih:e42bc14b44b8422e4c3c7ccd67ab58294cd38aff&amp;dn=EUR.zip">Europe</a>
+            </li>
+            <li>
+              <a href="magnet:?xt=urn:btih:819b73e27facb48dce3cbb35e1104f79ae550841&amp;dn=JPN.zip">Japan</a>
+            </li>
+          </ul>
+        </ul>
+      </ul>
+      <br/>
+      <h5>Compatible Browsers</h5>
+      <p>
+        <u>green:</u> recommended,
+        <u>orange:</u> probably works,
+        <u>red:</u> dont even try</p>
+      <ul>
+        <li class="li-browser-good">Chrome >= 60</li>
+        <li class="li-browser-good">Firefox >= 50</li>
+        <li class="li-browser-maybe">Opera >= 45</li>
+        <li class="li-browser-maybe">Edge >= 15</li>
+        <li class="li-browser-maybe">Safari >= 10</li>
+        <li class="li-browser-bad">Internet Explorer</li>
+        <li class="li-browser-bad">Any other browser not listed above</li>
+      </ul>
+    </div>
+    <div class="col-lg-5">
+      <h5>Files:</h5>
+      <form action="javascript:start();" id="uploadForm" ref="uploadForm" encType="multipart/form-data">
+        <div class="form-group">
+          <label>DSiWare.bin:</label>
+          <input class="form-control" id="dsiware" type="file" accept=".bin">
+        </div>
+        <div class="form-group">
+          <label>movable.sed:</label>
+          <input class="form-control" id="movable" type="file" accept=".sed">
+        </div>
+        <div class="form-group">
+          <label>ctcert.bin:</label>
+          <input class="form-control" id="ctcert" type="file" accept=".bin">
+        </div>
+        <div class="form-group">
+          <label>game_XXX.app:</label>
+          <input class="form-control" id="game" type="file" accept=".app">
+        </div>
+        <div class="form-group">
+          <label>public_XXX.sav:</label>
+          <input class="form-control" id="save" type="file" accept=".sav">
+        </div>
+        <button class="btn btn-primary btn-startInjection" type="submit">Start!</button>
+        <br/>
+        <p id="p-error"></p>
+      </form>
+    </div>
+    <div class="col-lg-1"></div>
+  </div>
+</body>
+
+</html>
