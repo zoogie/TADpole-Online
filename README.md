@@ -1,6 +1,6 @@
 # TADpole Online
 
-A (nearly) pure client-side javascript implementation of [TADpole](https://github.com/zoogie/TADpole). Only the signing step is done on a server. The only requirement is a somewhat recent browser (list on the [website](######################)).
+A (nearly) pure client-side javascript implementation of [TADpole](https://github.com/zoogie/TADpole). Only the signing step is done on a server. The only requirement is a somewhat recent browser (list on the [website](https://jisagi.github.io/TADpole-Online/)).
 
 # Credits
 
