@@ -7,7 +7,8 @@ function extractNormalKey(movableKeyY, keyXHex) {
   n = n.xor(keyY).add(c).and(f128);
   n = n.shiftLeft(87).or(n.shiftRight(128 - 87)).and(f128);
   let arr = n.toArray(256).value;
-  return (arr[0] === 0) ? arr.slice(1) : arr;
+  while (arr.length < 16) arr = [0].concat(arr);
+  return arr;
 }
 
 function extractDsiware(dsiware, normalKey) {
@@ -24,7 +25,7 @@ function extractDsiware(dsiware, normalKey) {
 
   /* content list extr & decrypt */
   let buffer = sliceArr(header, 0x48, 0x2C).buffer;
-  let sizes = new Int32Array(buffer)
+  let sizes = new Int32Array(buffer);
   sizes.forEach((s, i) => { if (s === 0xB34) sizes[i] = 0xB40 });
 
   let other = {};

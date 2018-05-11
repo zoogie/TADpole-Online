@@ -2,7 +2,6 @@ function start() {
   $('.btn-startInjection')[0].disabled = true;
   document.getElementById("p-error").innerHTML = '';
   loadFiles().then(data => {
-    if (typeof data !== 'object') return abort(data);
     let dsiware = data[0];
     let movable = data[1];
     let game = data[2];
@@ -10,13 +9,13 @@ function start() {
     let ctcert = data[4];
 
     /* Validation */
-    if (movable.length !== 0x140) return abort('movable.sed not valid');
-    if (ctcert.length !== 0x19E) return abort('ctcert.bin not valid');
+    if (movable.length !== 0x140 && movable.length !== 0x120) throw new Error('movable.sed size not valid');
+    if (ctcert.length !== 0x19E) throw new Error('ctcert.bin not valid');
 
     let crcGame = getCrc(game);
-    if (!constants.hashes.all.includes(crcGame)) return abort('game_XXX.app is not valid');
+    if (!constants.hashes.all.includes(crcGame)) throw new Error('game_XXX.app is not valid');
     let crcSave = getCrc(save);
-    if (!constants.hashes.all.includes(crcSave)) return abort('public_XXX.sav is not valid');
+    if (!constants.hashes.all.includes(crcSave)) throw new Error('public_XXX.sav is not valid');
 
     /* Data Extraction */
     let locC = constants.dataLocations.ctcert;
@@ -28,7 +27,7 @@ function start() {
     let movableKeyY = sliceArr(movable, locM.keyY.off, locM.keyY.len);
     let normalKey = extractNormalKey(movableKeyY, constants.keys.keyX);
     let dsiwareData = extractDsiware(dsiware, normalKey);
-    if (!dsiwareData) return abort('Wrong movable.sed provided');
+    if (!dsiwareData) throw new Error('DSiWare.bin can not be decrypted with the provided movable.sed');
 
     /* msed_data extraction */
     let msedDataHex = extractMsedData(movable);
@@ -36,7 +35,7 @@ function start() {
 
     /* app replacing */
     let srl = dsiwareData.other['srl.nds'];
-    if (game.length > srl.length) return abort('Game not compatible');
+    if (game.length > srl.length) throw new Error('Game not compatible');
     let end = sliceArr(srl, game.length, srl.length - game.length);
     let newApp = new Uint8Array(game.length + end.length);
     newApp.set(game);
@@ -44,7 +43,7 @@ function start() {
 
     /* sav replacing */
     let sav = dsiwareData.other['public.sav'];
-    if (save.length > sav.length) return abort('Save not compatible with this game');
+    if (save.length > sav.length) throw new Error('Save not compatible with this game');
     end = sliceArr(sav, save.length, sav.length - save.length);
     let newSav = new Uint8Array(save.length + end.length);
     newSav.set(save);
@@ -67,28 +66,35 @@ function start() {
       msedDataHex: msedDataHex,
       movableCrc: movableCrc,
     };
-    $.post('https://tsign.jisagi.net/sign', body, data => {
-      data = JSON.parse(data);
-      if (data.error) return abort(`Signature Error: ${data.error}`);
-      let { sigHashesBlock, sigApcert } = JSON.parse(data.response);
 
-      sigHashesBlock = parseHexString(sigHashesBlock);
-      sigApcert = parseHexString(sigApcert);
+    dsiwareData.dsiwareLength = dsiware.length;
+    dsiwareData.keys = {
+      movableKeyY: movableKeyY,
+      normalKey: normalKey,
+    };
 
-      /* inject signatures */
-      dsiwareData = injectSignatures(dsiwareData, sigHashesBlock, sigApcert);
+    /* Signing */
+    return signData(body, dsiwareData);
+  }).then(sigData => {
+    let { sigHashesBlock, sigApcert } = sigData.signatures;
+    let dsiwareData = sigData.dsiwareData;
 
-      /* rebuild dsiware */
-      dsiwareData.keys = { movableKeyY: movableKeyY, normalKey: normalKey };
-      let dsiwareFinal = buildDsiware(dsiwareData, dsiware.length);
+    sigHashesBlock = parseHexString(sigHashesBlock);
+    sigApcert = parseHexString(sigApcert);
 
-      /* offer file to download */
-      download(dsiwareFinal);
+    /* inject signatures */
+    dsiwareData = injectSignatures(dsiwareData, sigHashesBlock, sigApcert);
 
-      /* End */
-      console.log('Done');
-    }).always(() => {
-      $('.btn-startInjection')[0].disabled = false;
-    });
+    /* rebuild dsiware */
+    let dsiwareFinal = buildDsiware(dsiwareData, dsiwareData.dsiwareLength);
+
+    /* offer file to download */
+    download(dsiwareFinal);
+
+    /* End */
+    console.log('Done');
+    $('.btn-startInjection')[0].disabled = false;
+  }).catch(error => {
+    abort(error.message || error);
   });
 }

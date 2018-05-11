@@ -23,6 +23,7 @@
   <script src="public/js/custom/fileAccess.js"></script>
   <script src="public/js/custom/validation.js"></script>
   <script src="public/js/custom/extraction.js"></script>
+  <script src="public/js/custom/signing.js"></script>
   <script src="public/js/custom/injection.js"></script>
   <script src="public/js/custom/building.js"></script>
   <script src="public/js/custom/msed.js"></script>
@@ -32,6 +33,12 @@
 
   <meta name="description" content="DSiWare Injector for Seedminer.">
   <meta property="og:image" content="https://i.imgur.com/CVSu1zc.png">
+
+  <script>
+    $(document).ready(() => {
+      checkBrowserVersion();
+    });
+  </script>
 </head>
 
 <body>
@@ -76,11 +83,17 @@
         </ul>
       </ul>
       <br/>
-      <h5>Compatible Browsers</h5>
+      <h5>Compatible Browser Versions:</h5>
       <p>
         <u>green:</u> recommended,
         <u>orange:</u> probably works,
-        <u>red:</u> dont even try</p>
+        <u>red:</u> dont even try
+      </p>
+      <div class="div-browser-version" style="display:non;">
+        <p style="font-weight:bold;font-size:150%;float:left;">Your Browser:&nbsp;</p>
+        <p class="p-browser-version" style="font-weight:bold;font-size:150%;"></p>
+        <p class="p-browser-error" style="font-weight:bold;font-size:150%;"></p>
+      </div>
       <ul>
         <li class="li-browser-good">Chrome >= 60</li>
         <li class="li-browser-good">Firefox >= 50</li>

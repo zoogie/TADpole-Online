@@ -8,7 +8,7 @@ function loadFiles() {
 
     if (!fileDsiware.files.length || !fileMovable.files.length || !fileGame.files.length
       || !fileSave.files.length || !fileCtcert.files.length)
-      return resolve('Not all files provided');
+      return reject('Not all files provided');
 
     let promises = [];
     promises.push(loadFile(fileDsiware));
