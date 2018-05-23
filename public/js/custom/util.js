@@ -58,7 +58,7 @@ function checkBrowserVersion() {
     // some bugged browsers have 3+ version digits so anything >100 should be fine to filter
     if (reqVersion > 100) throw new Error('Browser version unsupported!');
 
-    $('.p-browser-version').css('color', 'green');
+    $('.p-browser-version').css('color', `${browser.good[reqBrowser] ? 'green' : 'orange'}`);
   } catch (e) {
     $('.p-browser-error').text(e.message || 'Unknown Error');
     $('.p-browser-error').css('color', 'red');
@@ -81,4 +81,17 @@ function getBrowserVersion() {
   M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
   if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
   return M;
+}
+
+function compareArr(arr1, arr2) {
+  if (!arr1 || !arr2) return false;
+  // Uint8Array conversion
+  arr1 = Array.from(arr1);
+  arr2 = Array.from(arr2);
+  if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
+  if (arr1.length !== arr2.length) return false;
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) return false;
+  }
+  return true;
 }
