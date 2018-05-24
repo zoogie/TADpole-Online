@@ -13,9 +13,9 @@ function start() {
     if (ctcert.length !== 0x19E) throw new Error('ctcert.bin not valid');
 
     let crcGame = getCrc(game);
-    if (!constants.hashes.all.includes(crcGame)) throw new Error('game_XXX.app is not valid');
+    if (!constants.hashes.srl.includes(crcGame)) throw new Error('game_XXX.app is not valid');
     let crcSave = getCrc(save);
-    if (!constants.hashes.all.includes(crcSave)) throw new Error('public_XXX.sav is not valid');
+    if (!constants.hashes.save.includes(crcSave)) throw new Error('public_XXX.sav is not valid');
 
     /* Data Extraction */
     let locC = constants.dataLocations.ctcert;
@@ -28,6 +28,9 @@ function start() {
     let normalKey = extractNormalKey(movableKeyY, constants.keys.keyX);
     let dsiwareData = extractDsiware(dsiware, normalKey);
     if (!dsiwareData) throw new Error('DSiWare.bin can not be decrypted with the provided movable.sed');
+
+    /* Game & Region checks */
+    validateDsiwareRegion(dsiwareData, game, crcGame, crcSave);
 
     /* msed_data extraction */
     let msedDataHex = extractMsedData(movable);
